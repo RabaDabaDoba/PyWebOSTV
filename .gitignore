@@ -105,3 +105,5 @@ ENV/
 
 # Pytest Cache
 .pytest_cache
+client_key.json
+client_store.json
