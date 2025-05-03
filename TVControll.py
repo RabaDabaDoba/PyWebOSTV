@@ -7,7 +7,7 @@ from pywebostv.controls import InputControl
 # Connect to the TV
 client = WebOSClient("192.168.1.30")  # Replace with your TV's IP address
 client.connect()
-for status in client.register({"client_key": "4dcf5256e1286ad433d10c2f9a04ae2d"}):  # Replace or obtain client_key
+for status in client.register({"client_key": "d8215a167f3710fa2a210603e7f0bca9"}):  # Replace or obtain client_key
     print(status)
 
 inp = InputControl(client)
@@ -23,9 +23,12 @@ hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7)
 mp_draw = mp.solutions.drawing_utils
 
 # Webcam
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 screen_w, screen_h = 1920, 1080  # You can adjust this to your TV resolution or desired scale
 prev_x, prev_y = 0, 0
+smooth_x, smooth_y = 0, 0
+alpha = 0.2  # smoothing factor (0 = no smoothing, 1 = immediate)
+
 click_state = False
 
 def calc_distance(a, b):
@@ -50,11 +53,17 @@ while cap.isOpened():
         y = int(index_finger.y * screen_h)
 
         # Move if change is large enough
-        dx = x - prev_x
-        dy = y - prev_y
-        if abs(dx) > 5 or abs(dy) > 5:
+        # Apply exponential moving average for smoothing
+        smooth_x = int((1 - alpha) * smooth_x + alpha * x)
+        smooth_y = int((1 - alpha) * smooth_y + alpha * y)
+
+        dx = smooth_x - prev_x
+        dy = smooth_y - prev_y
+
+        if abs(dx) > 3 or abs(dy) > 3:  # lower threshold for smooth tracking
             inp.move(dx, dy)
-            prev_x, prev_y = x, y
+            prev_x, prev_y = smooth_x, smooth_y
+
 
         # Check for pinch gesture (click)
         pinch_dist = calc_distance((index_finger.x, index_finger.y), (thumb.x, thumb.y))
