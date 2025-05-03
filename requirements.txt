@@ -1,4 +1,10 @@
-requests[security]
-future
+customtkinter==5.2.2
+mediapipe==0.10.21
+numpy==2.2.5
+opencv_contrib_python==4.11.0.86
+opencv_python==4.11.0.86
+Pillow==11.2.1
+pytest==8.3.5
+Requests==2.32.3
+setuptools==65.5.0
 ws4py==0.4.2
--e .
