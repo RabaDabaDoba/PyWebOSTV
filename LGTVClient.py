@@ -45,7 +45,7 @@ class LGTVClient(ctk.CTk):
 
     def connect_to_tv(self):
         try:
-            ip_address = "192.168.1.30"  # Replace with your actual TV IP
+            ip_address = "192.168.1.14"  # Replace with your actual TV IP
             self.client = WebOSClient(ip_address)
             store = self.load_store()
             self.client.connect()
